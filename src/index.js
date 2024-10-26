@@ -1,14 +1,19 @@
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import { schedule } from 'node-cron';
-import { mongodb, fetchInterval, rssSources, port } from './config/config';
-import { filterArticles, fetchAndProcessFeeds } from './services/rssService';
+import { mongodb, fetchInterval, rssSources, port } from './config/config.js';
+import RSSService from './services/rssService.js';
 
 const app = express();
 app.use(json());
 
 // Connect to MongoDB
-connect(mongodb.uri)
+connect(mongodb.uri, {
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    maxPoolSize: 10,
+    family: 4
+  })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -16,7 +21,7 @@ connect(mongodb.uri)
 app.get('/articles', async (req, res) => {
   try {
     const { keywords, startDate, endDate } = req.query;
-    const articles = await filterArticles({ keywords, startDate, endDate });
+    const articles = await RSSService.filterArticles({ keywords, startDate, endDate });
     res.json(articles);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,7 +32,7 @@ app.get('/articles', async (req, res) => {
 schedule(fetchInterval, async () => {
   console.log('Fetching RSS feeds...');
   try {
-    await fetchAndProcessFeeds(rssSources);
+    await RSSService.fetchAndProcessFeeds(rssSources);
     console.log('RSS feeds fetched and processed successfully');
   } catch (error) {
     console.error('Error in scheduled RSS fetch:', error);

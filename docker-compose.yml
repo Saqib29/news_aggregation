@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/news_aggregator?authSource=admin
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - mongo_network
+
   mongodb:
     image: mongo:4
     container_name: mongodb
@@ -8,6 +20,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: news_aggregator
     ports:
       - "27017:27017"
     volumes:

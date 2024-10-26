@@ -1,5 +1,3 @@
-// import { NlpManager } from 'node-nlp';
-
 import { NlpManager } from "node-nlp";
 
 class TopicExtractor {
@@ -8,8 +6,9 @@ class TopicExtractor {
   }
 
   async extractTopics(text) {
-    // Simple keyword extraction based on frequency
-    const words = text.toLowerCase().split(/\W+/);
+    if (!text) return [];
+    
+    const words = text.toLowerCase().split(/\W+/).filter(Boolean);
     const frequencies = {};
     
     words.forEach(word => {
@@ -25,19 +24,26 @@ class TopicExtractor {
   }
 
   async extractEntities(text) {
-    const result = await this.manager.process('en', text);
+    if (!text) return { people: [], locations: [], organizations: [] };
     
-    return {
-      people: result.entities
-        .filter(e => e.entity === 'person')
-        .map(e => e.utterance),
-      locations: result.entities
-        .filter(e => e.entity === 'location')
-        .map(e => e.utterance),
-      organizations: result.entities
-        .filter(e => e.entity === 'organization')
-        .map(e => e.utterance)
-    };
+    try {
+      const result = await this.manager.process('en', text);
+      
+      return {
+        people: result.entities
+          .filter(e => e.entity === 'person')
+          .map(e => e.utterance),
+        locations: result.entities
+          .filter(e => e.entity === 'location')
+          .map(e => e.utterance),
+        organizations: result.entities
+          .filter(e => e.entity === 'organization')
+          .map(e => e.utterance)
+      };
+    } catch (error) {
+      console.error('Error extracting entities:', error);
+      return { people: [], locations: [], organizations: [] };
+    }
   }
 }
 

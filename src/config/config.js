@@ -1,4 +1,6 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const mongodb = {
     uri: process.env.MONGODB_URI
