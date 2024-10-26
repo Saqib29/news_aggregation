@@ -60,5 +60,5 @@ GET /articles?keywords=technology&startDate=2024-01-01&endDate=2024-12-31
 ### Future Improvements:
 1. Create a web interface for viewing articles
 2. Implement user authentication and favorites
-
+3. Run rss feed process immediately after run the application
 
