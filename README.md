@@ -40,13 +40,13 @@ Query Parameters:
 GET /articles?keywords=technology&startDate=2024-01-01&endDate=2024-12-31
 ```
 
-## Architecture
+## Architecture:
 
 - Express.js
 - MongoDB for
 - Docker for application and db run
 
-### Article Schema
+### Article Schema:
 - title.
 - description.
 - content.
@@ -55,3 +55,10 @@ GET /articles?keywords=technology&startDate=2024-01-01&endDate=2024-12-31
 - source
 - topics
 - entities: (people, locations, organizations)
+
+
+### Future Improvements:
+1. Create a web interface for viewing articles
+2. Implement user authentication and favorites
+
+
